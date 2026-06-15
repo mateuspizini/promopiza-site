@@ -11,6 +11,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Todas as ofertas",
+  alternates: { canonical: "/ofertas" },
   description:
     "Todas as promoções ativas farejadas pela capivara: Shopee, Amazon e Magalu com desconto de verdade.",
 };
@@ -58,8 +59,36 @@ export default async function OfertasPage({
     })
     .slice(0, 200);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Ofertas Promopiza",
+    itemListElement: offers.slice(0, 60).map((o, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Product",
+        name: o.titulo,
+        image: (o.image_url || "").replace(/\.webp(\?.*)?$/i, ".jpg$1") || undefined,
+        category: o.categoria || undefined,
+        offers: {
+          "@type": "Offer",
+          price: numero(o.preco).toFixed(2),
+          priceCurrency: "BRL",
+          availability: "https://schema.org/InStock",
+          url: `https://promopiza.online/go/${encodeURIComponent(o.id)}?canal=google`,
+          seller: { "@type": "Organization", name: capitalizar(o.loja) },
+        },
+      },
+    })),
+  };
+
   return (
     <main className="min-h-screen bg-orange-50 text-zinc-900">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <section className="mx-auto max-w-6xl px-4 py-8">
         <header className="mb-6 rounded-3xl bg-white p-6 shadow-sm">
           <div className="flex items-start justify-between gap-4">
