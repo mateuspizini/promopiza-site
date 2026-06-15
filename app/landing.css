@@ -1,0 +1,546 @@
+/* ===== Promopiza Landing — paleta capivara ===== */
+
+:root {
+  --pz-creme: #f7efe2;
+  --pz-creme-2: #f1e4cf;
+  --pz-terracota: #c45a2a;
+  --pz-terracota-claro: #e07a3f;
+  --pz-capivara: #8b5e3c;
+  --pz-capivara-escuro: #5f3f28;
+  --pz-verde: #5a6e4a;
+  --pz-verde-escuro: #3c4a32;
+  --pz-lagoa: #7fa08a;
+  --pz-tinta: #2e2218;
+  --pz-card: #fffdf8;
+  --pz-sombra: rgba(94, 63, 40, 0.16);
+
+  --pz-bg-hero: #f7efe2;
+  --pz-bg-como: #ecf0e3;
+  --pz-bg-ofertas: #f6e7d4;
+  --pz-bg-cta: #dde8dc;
+}
+
+html.pz-dark {
+  --pz-creme: #1b1812;
+  --pz-creme-2: #241f17;
+  --pz-terracota: #e07a3f;
+  --pz-terracota-claro: #f0915a;
+  --pz-capivara: #b98a5e;
+  --pz-capivara-escuro: #8b5e3c;
+  --pz-verde: #8aa377;
+  --pz-verde-escuro: #5a6e4a;
+  --pz-lagoa: #2e4238;
+  --pz-tinta: #f0e8da;
+  --pz-card: #262019;
+  --pz-sombra: rgba(0, 0, 0, 0.45);
+
+  --pz-bg-hero: #181510;
+  --pz-bg-como: #151a13;
+  --pz-bg-ofertas: #1d1610;
+  --pz-bg-cta: #131a15;
+}
+
+.pz-landing {
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  color: var(--pz-tinta);
+  background-color: var(--pz-bg-hero);
+  overflow-x: clip;
+  transition: background-color 0.6s ease;
+  position: relative;
+}
+
+/* canvas da lagoa fica atrás de tudo */
+.pz-lagoa-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.pz-lagoa-fallback {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 110%, var(--pz-lagoa), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 105%, var(--pz-verde), transparent 65%);
+}
+
+.pz-conteudo {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== Seções/capítulos ===== */
+.pz-secao {
+  min-height: 92svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5rem 1.25rem;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.pz-titulo {
+  font-size: clamp(2.2rem, 6.5vw, 4.4rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.pz-subtitulo {
+  font-size: clamp(1rem, 2.4vw, 1.3rem);
+  max-width: 34rem;
+  margin-top: 1rem;
+  opacity: 0.82;
+  line-height: 1.55;
+}
+
+.pz-titulo-secao {
+  font-size: clamp(1.7rem, 4.5vw, 2.8rem);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+/* ===== Hero ===== */
+.pz-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .pz-hero {
+    grid-template-columns: 1.1fr 0.9fr;
+    text-align: left;
+  }
+}
+
+.pz-capivara-hero {
+  width: min(64vw, 320px);
+  margin: 0 auto;
+}
+
+/* ===== Sprites da capivara (animação por frames, estilo videogame) ===== */
+.pz-sprite {
+  width: 100%;
+  background-repeat: no-repeat;
+  background-position: 0% 0;
+  filter: drop-shadow(0 18px 26px var(--pz-sombra));
+  will-change: transform;
+}
+
+/* hero: idle farejando — neutra, piscadinha, fareja de olhos fechados */
+.pz-sprite-fareja {
+  aspect-ratio: 421.7 / 640;
+  background-image: url("/sheet-farejando.png");
+  background-size: 300% 100%;
+  animation: pz-fareja 4.8s infinite;
+}
+
+@keyframes pz-fareja {
+  0%, 51.99% { background-position-x: 0%; }
+  52%, 63.99% { background-position-x: 50%; }
+  64%, 71.99% { background-position-x: 0%; }
+  72%, 93.99% { background-position-x: 100%; }
+  94%, 100% { background-position-x: 0%; }
+}
+
+/* cta: acenando — pata baixa, meio, alta, meio */
+.pz-sprite-acena {
+  aspect-ratio: 400.7 / 520;
+  background-image: url("/sheet-aceno.png");
+  background-size: 300% 100%;
+  animation: pz-acena 1.1s infinite;
+}
+
+@keyframes pz-acena {
+  0%, 24.99% { background-position-x: 0%; }
+  25%, 49.99% { background-position-x: 50%; }
+  50%, 74.99% { background-position-x: 100%; }
+  75%, 100% { background-position-x: 50%; }
+}
+
+/* caminhante: ciclo de 4 frames */
+.pz-sprite-anda {
+  aspect-ratio: 216 / 300;
+  background-image: url("/sheet-andando.png");
+  background-size: 400% 100%;
+  animation: pz-anda 0.62s infinite;
+  filter: drop-shadow(0 4px 8px var(--pz-sombra));
+}
+
+@keyframes pz-anda {
+  0%, 24.99% { background-position-x: 0%; }
+  25%, 49.99% { background-position-x: 33.3334%; }
+  50%, 74.99% { background-position-x: 66.6667%; }
+  75%, 100% { background-position-x: 100%; }
+}
+
+/* scroll pra cima: ela vira e volta */
+.pz-caminhante.pz-voltando .pz-sprite-anda {
+  transform: scaleX(-1);
+}
+
+.pz-botao {
+  display: inline-block;
+  background: var(--pz-terracota);
+  color: #fff;
+  font-weight: 900;
+  padding: 0.95rem 1.8rem;
+  border-radius: 999px;
+  font-size: 1.05rem;
+  box-shadow: 0 10px 24px var(--pz-sombra);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.pz-botao:hover {
+  background: var(--pz-terracota-claro);
+  transform: translateY(-2px);
+}
+
+.pz-botao-secundario {
+  display: inline-block;
+  font-weight: 800;
+  padding: 0.95rem 1.6rem;
+  border-radius: 999px;
+  border: 2px solid var(--pz-capivara);
+  color: var(--pz-tinta);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.pz-botao-secundario:hover {
+  transform: translateY(-2px);
+  background: var(--pz-creme-2);
+}
+
+/* ===== Passos ===== */
+.pz-passos {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 3rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .pz-passos {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.pz-passo {
+  background: var(--pz-card);
+  border-radius: 1.75rem;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 12px 30px var(--pz-sombra);
+  position: relative;
+}
+
+.pz-passo-numero {
+  position: absolute;
+  top: -1rem;
+  left: 1.4rem;
+  background: var(--pz-verde);
+  color: #fff;
+  font-weight: 900;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 1.05rem;
+}
+
+.pz-passo-emoji {
+  font-size: 2.4rem;
+  display: block;
+}
+
+.pz-passo h3 {
+  font-weight: 900;
+  font-size: 1.2rem;
+  margin-top: 0.75rem;
+}
+
+.pz-passo p {
+  margin-top: 0.5rem;
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+/* ===== Cards de oferta ===== */
+.pz-grid-ofertas {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 600px) {
+  .pz-grid-ofertas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1000px) {
+  .pz-grid-ofertas {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.pz-card-oferta {
+  background: var(--pz-card);
+  border-radius: 1.75rem;
+  overflow: hidden;
+  box-shadow: 0 12px 30px var(--pz-sombra);
+  display: flex;
+  flex-direction: column;
+}
+
+.pz-card-img {
+  aspect-ratio: 4 / 3;
+  background: var(--pz-creme-2);
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.pz-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 0.9rem;
+}
+
+.pz-card-emoji {
+  font-size: 3rem;
+}
+
+.pz-badge-desconto {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  background: var(--pz-verde);
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+}
+
+.pz-badge-loja {
+  display: inline-block;
+  background: var(--pz-creme-2);
+  color: var(--pz-capivara-escuro);
+  font-weight: 800;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+html.pz-dark .pz-badge-loja {
+  color: var(--pz-tinta);
+}
+
+.pz-card-corpo {
+  padding: 1.2rem 1.3rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.pz-card-titulo {
+  font-weight: 800;
+  font-size: 0.98rem;
+  line-height: 1.35;
+  margin-top: 0.6rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.7em;
+}
+
+.pz-preco-antigo {
+  position: relative;
+  display: inline-block;
+  opacity: 0.55;
+  font-size: 0.92rem;
+  margin-top: 0.8rem;
+}
+
+.pz-preco-antigo::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 52%;
+  height: 2px;
+  width: 100%;
+  background: var(--pz-terracota);
+  transform: scaleX(var(--risco, 1));
+  transform-origin: left center;
+}
+
+.pz-preco-novo {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--pz-terracota);
+  line-height: 1.1;
+}
+
+.pz-card-botao {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.pz-card-botao a {
+  display: block;
+  text-align: center;
+  background: var(--pz-terracota);
+  color: #fff;
+  font-weight: 900;
+  padding: 0.8rem 1rem;
+  border-radius: 1.1rem;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.pz-card-botao a:hover {
+  background: var(--pz-terracota-claro);
+  transform: translateY(-1px);
+}
+
+/* ===== CTA final ===== */
+.pz-cta {
+  text-align: center;
+  align-items: center;
+}
+
+.pz-capivara-cta {
+  width: min(52vw, 240px);
+  margin: 0 auto 1.5rem;
+}
+
+/* flutuação suave da capivara acenando */
+.pz-flutua {
+  animation: pz-flutua 2.6s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+
+@keyframes pz-flutua {
+  0%, 100% { transform: translateY(0) rotate(-1.2deg); }
+  50% { transform: translateY(-8px) rotate(1.2deg); }
+}
+
+/* ===== Capivara caminhante ===== */
+.pz-caminhante {
+  position: fixed;
+  bottom: 0.4rem;
+  left: 0;
+  width: 74px;
+  z-index: 2;
+  pointer-events: none;
+  will-change: transform;
+}
+
+
+/* ===== Header flutuante ===== */
+.pz-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.9rem 1.25rem;
+}
+
+.pz-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 900;
+  font-size: 1.15rem;
+  color: var(--pz-tinta);
+  background: color-mix(in srgb, var(--pz-card) 80%, transparent);
+  backdrop-filter: blur(8px);
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px var(--pz-sombra);
+}
+
+.pz-header-acoes {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pz-tema, .pz-link-header {
+  background: color-mix(in srgb, var(--pz-card) 80%, transparent);
+  backdrop-filter: blur(8px);
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--pz-tinta);
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px var(--pz-sombra);
+  transition: transform 0.15s ease;
+}
+
+.pz-tema:hover, .pz-link-header:hover {
+  transform: translateY(-1px);
+}
+
+/* ===== Rodapé ===== */
+.pz-rodape {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2.5rem 1.5rem 3.5rem;
+  font-size: 0.85rem;
+  opacity: 0.75;
+  max-width: 40rem;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ===== Estados de animação (JS liga) ===== */
+.pz-anim .pz-entra {
+  opacity: 0;
+  transform: translateY(34px);
+}
+
+.pz-anim .pz-card-oferta {
+  opacity: 0;
+  transform: translateY(44px);
+}
+
+.pz-anim .pz-preco-antigo {
+  --risco: 0;
+}
+
+/* ===== Reduced motion: tudo visível, nada se mexe ===== */
+.pz-logo img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pz-flutua,
+  .pz-sprite {
+    animation: none !important;
+  }
+}
