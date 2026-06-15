@@ -56,7 +56,17 @@ async function getOfferById(id: string): Promise<Offer | null> {
   return offer;
 }
 
-function registrarClique(offer: Offer, canal: string) {
+// Detecta bots/crawlers/fetchers que NAO sao cliques humanos reais.
+// Inclui: previews de mensageiros, buscadores, libs HTTP, navegadores headless,
+// monitores de uptime e User-Agents vazios/curtos (fetch automatizado).
+function ehBot(ua: string): boolean {
+  if (!ua || ua.length < 20) return true; // UA vazio ou curto demais = automacao
+  return /bot|crawler|spider|preview|scraper|fetch|monitor|uptime|lighthouse|gtmetrix|pingdom|headless|phantom|electron|facebookexternalhit|meta-externalagent|facebookcatalog|whatsapp|telegram|twitter|pinterest|google|bing|yandex|baidu|applebot|duckduck|linkedin|discord|slack|vercel|python-requests|axios|node-fetch|go-http-client|libwww|java\/|curl|wget|postman|insomnia/i.test(
+    ua
+  );
+}
+
+function registrarClique(offer: Offer, canal: string, ua: string) {
   const webhook = process.env.PROMOPIZA_CLICK_WEBHOOK_URL;
 
   const payload = {
@@ -66,6 +76,7 @@ function registrarClique(offer: Offer, canal: string) {
     loja: offer.loja,
     categoria: offer.categoria,
     titulo: offer.titulo,
+    ua: ua.slice(0, 300),
   };
 
   if (!webhook) {
@@ -73,7 +84,7 @@ function registrarClique(offer: Offer, canal: string) {
     return;
   }
 
-  // fire-and-forget após a resposta — não atrasa o redirect
+  // fire-and-forget apos a resposta - nao atrasa o redirect
   after(async () => {
     try {
       await fetch(webhook, {
@@ -104,15 +115,11 @@ export async function GET(
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // bots e crawlers de preview (Facebook, WhatsApp, Telegram...) não contam como clique
   const ua = request.headers.get("user-agent") || "";
-  const ehBot =
-    /facebookexternalhit|meta-externalagent|facebookcatalog|whatsapp|telegrambot|twitterbot|pinterest|googlebot|bingbot|applebot|duckduckbot|linkedinbot|discordbot|slackbot|vercel-screenshot|bot|crawler|spider|preview/i.test(
-      ua
-    );
 
-  if (!ehBot) {
-    registrarClique(offer, canal);
+  // bots e crawlers de preview nao contam como clique
+  if (!ehBot(ua)) {
+    registrarClique(offer, canal, ua);
   }
 
   return NextResponse.redirect(offer.link_afiliado, 302);
